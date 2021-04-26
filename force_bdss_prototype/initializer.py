@@ -8,24 +8,32 @@ class Initializer:
 
     class __Init:
 
-        def __init__(self):
+        def __init__(self, R):
+            self.R = R
             self.m_db_access = Material_db_access()
+            self.p_db_access = Process_db_access(self.R)
             self.react_knowledge = Reaction_knowledge_access()
 
-        def get_init_data_kin_model(self, R):
+        def get_init_data_kin_model(self, R, C):
             # Transferred to json
             A = R["reactants"][0]
             B = R["reactants"][1]
+            p_A = self.m_db_access.get_pure_component_density(A)
+            p_B = self.m_db_access.get_pure_component_density(B)
+            p_C = self.m_db_access.get_pure_component_density(C)
             p_db_access = Process_db_access(R)
             X = np.zeros(7)
             T_min, T_max = p_db_access.get_temp_range()
-            X[5] = T_min + 0.5 * (T_max - T_min)
+            X[5] = 0.5 * (T_max + T_min)
             C_min, C_max = p_db_access.get_contamination_range(A)
-            X[4] = C_min + 0.5 * (C_max - C_min)
+            C_bar = 0.5 * (C_max + C_min)
+            E = p_C - C_bar
+            E /= p_C / p_A + p_C / p_B - C_bar * p_C / (p_B * p_C)
             X[2] = 0
             X[3] = 0
-            X[0] = 0.5 - X[4]
-            X[1] = 0.5
+            X[0] = E
+            X[1] = E
+            X[4] = C_bar * (1 - X[1] / p_B)
             tau = self.react_knowledge.estimate_reaction_time(R)
             X[6] = tau
             return X
@@ -34,18 +42,28 @@ class Initializer:
             # Transferred to json
             S = self.react_knowledge.get_side_products(R)[0]
             R_S = { "reactants": R["reactants"], "products": [S] }
-            vp, grad_Hp = self.m_db_access.get_arrhenius_params(R)
-            vs, grad_Hs = self.m_db_access.get_arrhenius_params(R_S)
+            vp, delta_Hp = self.m_db_access.get_arrhenius_params(R)
+            vs, delta_Hs = self.m_db_access.get_arrhenius_params(R_S)
             M_v = np.array([vp, vs])
-            M_delta_H = np.array([grad_Hp, grad_Hs])
+            M_delta_H = np.array([delta_Hp, delta_Hs])
             return (M_v, M_delta_H)
+
+        def x_to_y(self, X):
+            V_r = self.p_db_access.get_reactor_vol()
+            p_B = self.m_db_access.get_pure_component_density(self.R["reactants"][1])
+            y = np.zeros(4)
+            y[0] = V_r - X[1] * V_r / p_B
+            y[1] = V_r / y[0] * X[4]
+            y[2] = X[5]
+            y[3] = X[6]
+            return y
 
     instance = None
 
-    def __init__(self):
+    def __init__(self, R):
         # init of Process_db to be done
         if not Initializer.instance:
-            Initializer.instance = Initializer.__Init()
+            Initializer.instance = Initializer.__Init(R)
         else:
             pass
 
