@@ -188,3 +188,4 @@ uml:
 apidoc:
 	-rm -rf source/api/
 	sphinx-apidoc -o source/api ../itwm_example
+	sphinx-apidoc -o source/prototype ../force_bdss_prototype
