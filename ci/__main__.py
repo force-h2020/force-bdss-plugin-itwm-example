@@ -61,6 +61,24 @@ def test(python_version):
             "-m",
             "unittest",
             "discover",
+            "-s",
+            "./itwm_example",
+        ]
+    )
+
+    check_call(
+        [
+            "edm",
+            "run",
+            "-e",
+            env_name,
+            "--",
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "./force_bdss_prototype",
         ]
     )
 
