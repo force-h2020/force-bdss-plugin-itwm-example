@@ -187,5 +187,6 @@ uml:
 .PHONY: apidoc
 apidoc:
 	-rm -rf source/api/
+	-rm -rf source/prototype/
 	sphinx-apidoc -o source/api ../itwm_example
-	sphinx-apidoc -o source/prototype ../force_bdss_prototype
+	sphinx-apidoc -o source/prototype ../force_bdss_prototype ../force_bdss_prototype/gui_apps/kivy_library.py 

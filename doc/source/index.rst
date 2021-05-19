@@ -12,10 +12,18 @@ User Manual
    Introduction <introduction>
 
 
-API Reference
-=============
+ITWM Example API Reference
+==========================
 
 .. toctree::
    :maxdepth: 2
 
    api/modules
+
+ITWM Prototype API Reference
+============================
+
+.. toctree::
+   :maxdepth: 2
+
+   prototype/modules
