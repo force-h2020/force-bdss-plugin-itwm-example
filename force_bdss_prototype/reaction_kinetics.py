@@ -178,24 +178,45 @@ def _calc_k(T, M):
 
 class Reaction_kinetics:
 
-    def run_default(self, R, C):
-        self.ini = Initializer(R)
+    """
+    Analytical model for the physics simulation
+    """
+
+    def _run_default(self, R, C):
+        self.ini = Initializer.getInstance(R)
         X = self.ini.get_init_data_kin_model(R, C)
         M = self.ini.get_material_relation_data(R)
         return self.run(X, M)
 
     def run(self, X0, M):
+        """
+        Executes the analytical model to perform the physics simulation
+
+        Parameters
+        ----------
+        X0: numpy.array
+            A numpy array containing the initial data of the kinematic model
+        M: numpy.array
+            A numpy array containing the material relation data
+
+        Returns
+        -------
+        (X, grad_x_X): tuple[numpy.array, numpy.array]
+            A tuple consiting of a numpy array containing the results of the
+            physics simulation and a numpy array containing the x_X gradient
+            matrix
+        """
         # solver of kinetic module
         R = 8.3144598e-3
         k_ps = _calc_k(X0[5], M)
-        X_mat = _analytical_solution(X0[0],
+        X = _analytical_solution(X0[0],
                                      X0[1],
                                      X0[2],
                                      X0[3],
                                      X0[4],
                                      k_ps,
                                      X0[6])
-        grad_x_X_mat = _grad_x(X0[0],
+        grad_x_X = _grad_x(X0[0],
                                X0[1],
                                X0[2],
                                X0[3],
@@ -203,10 +224,10 @@ class Reaction_kinetics:
                                k_ps,
                                X0[6])
         dkdT = 1 / (R * X0[5]**2) * np.sum(k_ps * M[1])
-        grad_x_X_mat[:, 5] = dkdT * grad_x_X_mat[:, 5]
+        grad_x_X[:, 5] = dkdT * grad_x_X[:, 5]
         dkskdT = (M[1][1] - M[1][0]) * k_ps[0] * k_ps[1]
         dkskdT /= R * X0[5]**2 * (k_ps[0] * M[0][1] / M[0][0] + k_ps[1] * M[0][0] / M[0][1])**2
         dkpkdT = - dkskdT
-        grad_x_X_mat[2, 5] += _alpha(X0[0], X0[1], np.sum(k_ps), X0[6]) * dkpkdT
-        grad_x_X_mat[3, 5] += _alpha(X0[0], X0[1], np.sum(k_ps), X0[6]) * dkskdT
-        return (X_mat, grad_x_X_mat)
+        grad_x_X[2, 5] += _alpha(X0[0], X0[1], np.sum(k_ps), X0[6]) * dkpkdT
+        grad_x_X[3, 5] += _alpha(X0[0], X0[1], np.sum(k_ps), X0[6]) * dkskdT
+        return (X, grad_x_X)

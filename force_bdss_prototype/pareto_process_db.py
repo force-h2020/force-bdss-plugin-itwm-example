@@ -7,7 +7,15 @@ class Pareto_process_db:
     def __init__(self, data):
         self.data = data
 
-    def write_csv(self, fil=None):
+    def dump_data(self, fil=None):
+        """
+        Dumps the calculated data to a numpy savez file
+
+        Parameters
+        ----------
+        fil: String
+            Filename the data is saved to
+        """
         self.pareto_filter()
         if fil:
             np.savez(fil, self.data)
@@ -15,6 +23,9 @@ class Pareto_process_db:
             np.savez("pareto_data.npz", volume_A_tilde=self.data[:, 0], conc_e=self.data[:, 1], temperature=self.data[:, 2], reaction_time=self.data[:, 3], impurity_conc=self.data[:, 4], prod_cost=self.data[:, 5], mat_cost=self.data[:, 6])
 
     def pareto_filter(self):
+        """
+        Removes all non-optimal data points 
+        """
         idx = []
         for i in range(self.data.shape[0]):
             loc_min = False

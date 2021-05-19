@@ -8,105 +8,11 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.label import Label
 from kivy.properties import StringProperty, NumericProperty
-from .kvlib import MinMaxSlider, EditableLabel, KeyboardListener
+from .kivy_library import MinMaxSlider, EditableLabel, KeyboardListener
 
-#kv
-Builder.load_string('''
-<ConstraintsTopRow>:
-    Label:
-        text: 'Name'
-        size_hint_x: 0.2
-    Label:
-        text: 'Unit'
-        size_hint_x: 0.1
-        pos_hint: {"x": 0.2, "y":0}
-    Label:
-        text: 'Min'
-        size_hint_x: 0.25
-        pos_hint: {"x": 0.275, "y":0}
-    Label:
-        text: 'Max'
-        size_hint_x: 0.25
-        pos_hint: {"x": 0.775, "y":0}
-<ConstraintsBottomRow>:
-    Button:
-        text: 'Add Constraint'
-        on_release: app.addConstraint()
-    Button:
-        text: 'Submit'
-        on_release: app.stopWithOutput()
-<StaticConstraintWidget>:
-    Label:
-        text: root.name
-        size_hint_x: 0.2
-    Label:
-        text: root.unit
-        size_hint_x: 0.1
-        pos_hint: {"x": 0.2, "y":0}
-    MinMaxSlider:
-        id: slider
-        min: root.min
-        max: root.max
-        size_hint: (0.7,0.75)
-        pos_hint: {"x": 0.3, "y":0}
-        value0: root.value0
-        value1: root.value1
-        on_value0: root.updateValueLabel(self.value0, 0)
-        on_value1: root.updateValueLabel(self.value1, 1)
-    TextInput:
-        id: minLabel
-        text: str(root.min)
-        size_hint: (0.1,0.25)
-        pos_hint: {"x": 0.35, "y":0.6}
-        multiline: False
-        on_text_validate: root.updateValue(self.text,0)
-    TextInput:
-        id: maxLabel
-        text: str(root.max)
-        size_hint: (0.1,0.25)
-        pos_hint: {"x": 0.85, "y":0.6}
-        multiline: False
-        on_text_validate: root.updateValue(self.text,1)
-<EditableConstraintWidget>:
-    EditableLabel:
-        id: nameLabel
-        text: root.name
-        size_hint_x: 0.2
-        on_text: root.updateName(self.text)
-    EditableLabel:
-        id: unitLabel
-        text: root.unit
-        size_hint_x: 0.1
-        pos_hint: {"x": 0.2, "y":0}
-        on_text: root.updateUnit(self.text)
-    MinMaxSlider:
-        id: slider
-        min: root.min
-        max: root.max
-        size_hint: (0.7,0.75)
-        pos_hint: {"x": 0.3, "y":0}
-        value0: root.value0
-        value1: root.value1
-        on_value0: root.updateValueLabel(self.value0, 0)
-        on_value1: root.updateValueLabel(self.value1, 1)
-    TextInput:
-        id: minLabel
-        text: str(root.min)
-        size_hint: (0.1,0.25)
-        pos_hint: {"x": 0.35, "y":0.6}
-        multiline: False
-        on_text_validate: root.updateValue(self.text,0)
-    TextInput:
-        id: maxLabel
-        text: str(root.max)
-        size_hint: (0.1,0.25)
-        pos_hint: {"x": 0.85, "y":0.6}
-        multiline: False
-        on_text_validate: root.updateValue(self.text,1)
-''')
 
 #window
-class EditorApp(App):
+class ConstraintsApp(App):
     def build(self):
         root = BoxLayout(orientation = 'vertical')
         root.add_widget(ConstraintsTopRow(size_hint_y = 0.25))
@@ -127,7 +33,7 @@ class EditorApp(App):
         self.stop()
     
     def addConstraint(self):
-        self.constraintWrapper.addEditableConstraint("New Constraint","?",0,1)
+        self.constraintWrapper.addEditableConstraint('New Constraint','?',0,1)
 
     def export(self):
         return self.constraintWrapper.export()
@@ -153,7 +59,7 @@ class ConstraintWrapper(ScrollView):
         self.view = GridLayout(cols=1, size_hint=(1, None))
         self.view.bind(minimum_height=self.view.setter('height'))
         for c in constraints:
-            self.addStaticConstraint(c.get("name"),c.get("unit"),c.get("min"),c.get("max"))
+            self.addStaticConstraint(c.get('name'),c.get('unit'),c.get('min'),c.get('max'))
         self.add_widget(self.view)
     
     def addStaticConstraint(self, name, unit, min, max):
@@ -189,36 +95,36 @@ class ConstraintWrapper(ScrollView):
         return output
 
 class ConstraintWidgetBase(RelativeLayout):
-    name = StringProperty()
-    unit = StringProperty()
-    value0 = NumericProperty()
-    value1 = NumericProperty()
-    min = NumericProperty()
-    max = NumericProperty()
+    _name = StringProperty()
+    _unit = StringProperty()
+    _value0 = NumericProperty()
+    _value1 = NumericProperty()
+    _min = NumericProperty()
+    _max = NumericProperty()
 
     def __init__(self, name, unit, min, max, **kwargs):
         super().__init__(**kwargs)
-        self.name = name
-        self.unit = unit
-        self.min = min
-        self.value0 = min
-        self.value1 = max
-        self.max = max
+        self._name = name
+        self._unit = unit
+        self._min = min
+        self._value0 = min
+        self._value1 = max
+        self._max = max
 
     def setValue(self, newValue, index):
         if(index):
-            self.value1 = newValue
+            self._value1 = newValue
         else:
-            self.value0 = newValue
+            self._value0 = newValue
     
     def updateValueLabel(self, value, index):
         if(index):
-            self.ids["maxLabel"].text = self.valueString(value)
+            self.ids['maxLabel'].text = self.valueString(value)
         else:
-            self.ids["minLabel"].text = self.valueString(value)
+            self.ids['minLabel'].text = self.valueString(value)
 
     def valueString(self, value):
-        range = min(abs(self.max-self.min),abs(value))
+        range = min(abs(self._max-self._min),abs(value))
         i = 0 
         rangeCheck = 0.1
         while(range < rangeCheck):
@@ -230,23 +136,23 @@ class ConstraintWidgetBase(RelativeLayout):
 
     def resetValueLabel(self, index):
         if(index):
-            self.updateValueLabel(self.ids["slider"].value1,1)
+            self.updateValueLabel(self.ids['slider'].value1,1)
         else:
-            self.updateValueLabel(self.ids["slider"].value0,0)
+            self.updateValueLabel(self.ids['slider'].value0,0)
 
     def checkInBounds(self, value):
-        if(value >= self.min and value <= self.max):
+        if(value >= self._min and value <= self._max):
             return
-        raise IndexError("value out of bounds")
+        raise IndexError('value out of bounds')
 
     def checkValue(self, value, index):
         if(index): #max
-            if(value >= self.ids["slider"].value0):
+            if(value >= self.ids['slider'].value0):
                 return 
         else: #min
-            if(value <= self.ids["slider"].value1):
+            if(value <= self.ids['slider'].value1):
                 return 
-        raise ValueError("Max < Min")
+        raise ValueError('Max < Min')
 
     def updateValue(self, stringValue, index):
         try:
@@ -254,7 +160,7 @@ class ConstraintWidgetBase(RelativeLayout):
             self.checkValue(newValue,index)
             self.checkInBounds(newValue)
         except ValueError:
-            content = "Min-values must be smaller than Max-values!"
+            content = 'Min-values must be smaller than Max-values!'
             popup = Popup(title='Warning',
             content=Label(text=content, text_size= (350, None)),
             size_hint=(None, None), size=(400, 300))
@@ -264,7 +170,7 @@ class ConstraintWidgetBase(RelativeLayout):
             if(self.shiftPressed()):
                 return self.updateBounds(newValue,index)
             else:
-                content = "Value out of Bounds, please stay in bounds or redefine the bounds by pressing \"shift\" while updating a min/max value."
+                content = 'Value out of Bounds, please stay in bounds or redefine the bounds by pressing \'shift\' while updating a min/max value.'
                 popup = Popup(title='Warning',
                 content=Label(text=content, text_size= (350, None)),
                 size_hint=(None, None), size=(400, 300))
@@ -278,9 +184,9 @@ class ConstraintWidgetBase(RelativeLayout):
     
     def updateBounds(self, value, index):
         if(index): #max
-            self.max = value
+            self._max = value
         else: #min
-            self.min = value
+            self._min = value
         self.setValue(value, index)
 
     def shiftPressed(self):
@@ -290,7 +196,7 @@ class ConstraintWidgetBase(RelativeLayout):
         pass
 
     def export(self):
-        return {"name": self.name, "unit": self.unit,"min": self.ids["slider"].value0, "max": self.ids["slider"].value1}
+        return {'name': self._name, 'unit': self._unit,'min': self.ids['slider'].value0, 'max': self.ids['slider'].value1}
 
 class StaticConstraintWidget(ConstraintWidgetBase):
     def isEditable(self):
@@ -301,13 +207,13 @@ class EditableConstraintWidget(ConstraintWidgetBase):
         if App.get_running_app().getWidgetIndex(self) == App.get_running_app().getIndex(newName) or App.get_running_app().getIndex(newName) == -1:
             self.name = newName
         else:
-            content = "Can not change name, because of name duplication: "+str(newName)
+            content = 'Can not change name, because of name duplication: '+str(newName)
             popup = Popup(title='Warning',
             content=Label(text=content, text_size= (350, None)),
             size_hint=(None, None), size=(400, 300))
             popup.open()
-            self.name = self.ids["nameLabel"].textCache
-            self.ids["nameLabel"].text = self.ids["nameLabel"].textCache
+            self.name = self.ids['nameLabel'].textCache
+            self.ids['nameLabel'].text = self.ids['nameLabel'].textCache
 
     def updateUnit(self, newUnit):
         self.unit = newUnit
@@ -324,9 +230,9 @@ class ConstraintsBottomRow(BoxLayout):
 
 ######### Main  #########
 if __name__ == '__main__':
-    constraints = [{"name": "Volume A","unit": "m³", "min": -5.0, "max": 5.0},
-                   {"name": "Concentration e","unit": "ppm", "min": 0.01, "max": 3.0},
-                   {"name": "Temperature", "unit": "K", "min": -10.0, "max": -5.0},
-                   {"name": "Reaction time", "unit": "s", "min": 0.01, "max": 0.09}]
-    print(EditorApp().runWithOutput(constraints,constraints))
+    constraints = [{'name': 'Volume A','unit': 'm³', 'min': -5.0, 'max': 5.0},
+                   {'name': 'Concentration e','unit': 'ppm', 'min': 0.01, 'max': 3.0},
+                   {'name': 'Temperature', 'unit': 'K', 'min': -10.0, 'max': -5.0},
+                   {'name': 'Reaction time', 'unit': 's', 'min': 0.01, 'max': 0.09}]
+    print(ConstraintsApp().runWithOutput(constraints,constraints))
 

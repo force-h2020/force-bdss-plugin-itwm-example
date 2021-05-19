@@ -6,22 +6,25 @@ from .reaction_kinetics import Reaction_kinetics
 from sympy import symbols, Matrix, sympify, diff, evalf, lambdify
 
 class Reaction_kineticswrapper():
+    """
+        Wrapper for the physics simulation
+    """
     def __init__(self, R, C):
         self.R = R
         self.C = C
         self.reaction_kinetics = Reaction_kinetics()
-        self.p_db_access = Process_db_access(self.R)
-        self.m_db_access = Material_db_access()
-        self.ini = Initializer(self.R)
+        self.p_db_access = Process_db_access.getInstance(self.R)
+        self.m_db_access = Material_db_access.getInstance()
+        self.ini = Initializer.getInstance(self.R)
         self.M = self.ini.get_material_relation_data(R)
-        self.calc_init()
+        self._calc_init()
 
-    def calc_init(self):
+    def _calc_init(self):
         #retrieve fixed values
         p_A_value = self.m_db_access.get_pure_component_density(self.R["reactants"][0])
         p_B_value = self.m_db_access.get_pure_component_density(self.R["reactants"][1])
         p_C_value = self.m_db_access.get_pure_component_density(self.C)
-        V_r_value, W_value, const_A_value, cost_B_value, quad_coeff_value, C_supplier_value, cost_purification_value = self.p_db_access.get_process_params()
+        V_r_value, W_value, const_A_value, cost_B_value, quad_coeff_value, C_supplier_value, cost_purification_value = self.p_db_access._get_process_params()
         #fixed value symbols
         p_A, p_B, p_C, V_r, W, const_A, cost_B, quad_coeff, C_supplier, cost_purification = symbols("p_A, p_B, p_C, V_r, W, const_A, cost_B, quad_coeff, C_supplier, cost_purification")
 
@@ -88,6 +91,21 @@ class Reaction_kineticswrapper():
 
 
     def calc_x(self, y):
+        """
+        Performs the physics simulation with the input values of the y-dimension
+        
+
+        Parameters
+        ----------
+        y: numpy.array 
+            Numpy array containing the y-dimension values
+
+        Returns
+        -------
+        (x, grad_y_x): tuple[numpy.array, numpy.array] 
+            A tuple consisting of a 1D numpy array containing the results of the
+            simulation and a 2D numpy array containing the y_x gradient matrix 
+        """
         x_mat, grad_X_x_mat = self.reaction_kinetics.run(self.X(y), self.M)
         x = np.zeros(7, dtype=np.float)
         x[:5] = x_mat

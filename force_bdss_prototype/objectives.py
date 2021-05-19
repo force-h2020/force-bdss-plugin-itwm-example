@@ -1,35 +1,31 @@
 import numpy as np
 from .process_db_access import Process_db_access
 from .material_db_access import Material_db_access
-from .function_editor import FunctionApp
+from .gui_apps.functionapp import FunctionApp
 from .attributes import Attributes
 from sympy import symbols, Matrix, sympify, diff, evalf, lambdify
 
 class Objectives:
-    """ Objectives class
+    """ 
+    Implementation of the Objective Dimension
     """
     # default constructur
     def __init__(self, R, C):
-        """ Constructor requires ...
-        Parmeters
-        ---------
-        R : type
-            Description of R
-        """
         self.R = R
         self.C = C
-        self.p_db_access = Process_db_access(self.R)
-        self.m_db_access = Material_db_access()
-        self.O, self.grad_a_O = FunctionApp().run_with_output(self.function_editor_input(), -1)
+        self.p_db_access = Process_db_access.getInstance(self.R)
+        self.m_db_access = Material_db_access.getInstance()
+        self.O, self.grad_a_O = FunctionApp().run_with_output(self._function_editor_input(), -1)
         self.attributes = Attributes(R, C)
-        self.obj_calc_init()
+        self._obj_calc_init()
 
-    def obj_calc_init(self):
+    def _obj_calc_init(self):
+        #Sets up objective calculation
         #retrieve fixed values
         p_A_value = self.m_db_access.get_pure_component_density(self.R["reactants"][0])
         p_B_value = self.m_db_access.get_pure_component_density(self.R["reactants"][1])
         p_C_value = self.m_db_access.get_pure_component_density(self.C)
-        V_r_value, W_value, const_A_value, cost_B_value, quad_coeff_value, C_supplier_value, cost_purification_value = self.p_db_access.get_process_params()
+        V_r_value, W_value, const_A_value, cost_B_value, quad_coeff_value, C_supplier_value, cost_purification_value = self.p_db_access._get_process_params()
         #fixed value symbols
         p_A, p_B, p_C, V_r, W, const_A, cost_B, quad_coeff, C_supplier, cost_purification = symbols("p_A, p_B, p_C, V_r, W, const_A, cost_B, quad_coeff, C_supplier, cost_purification")
     
@@ -46,13 +42,27 @@ class Objectives:
         self.grad_a_O = lambdify(self.a, self.grad_a_O)
 
     def obj_calc(self, y):
+        """
+        Calculates the objectives and the y_O gradient matrix
+
+        Parameters
+        ----------
+        y: numpy.array
+            numpy.array containing the y-dimension values
+
+        Returns
+        -------
+        (objectives, grad_y_O_Matrix) tuple[numpy.array, numpy.array]
+            A tuple consisting of a 1D numpy array containing the calculated
+            objective values and a 2D numpy array containing y_O gradient matrix
+        """
         a, grad_y_a = self.attributes.calc_attributes(y)
         O = self.O(*a)
         grad_a_O = self.grad_a_O(*a)
         grad_y_O = np.dot(grad_y_a, grad_a_O)
         return (O, grad_y_O.T)
 
-    def function_editor_input(self):
+    def _function_editor_input(self):
         #functions: key: id, value[0]: description, value[1]: function, value[2]: isEditable
         functions = {
             "pc" : ["Production Cost","t * (T - 290)^2 * W", False],

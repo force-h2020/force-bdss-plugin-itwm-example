@@ -1,0 +1,80 @@
+#:kivy 1.10
+<FunctionsHeader>:
+    size_hint_y: 0.1
+    orientation: 'horizontal'
+    Label:
+        text: 'id'
+    Label:
+        text: 'Description'
+        text_size: self.width, None
+        size_hint_x: 1.25
+    Label:
+        text: 'Function'
+        size_hint_x: 4
+
+<AttributesHeader>:
+    size_hint_y: 0.2
+    orientation: 'horizontal'
+    Label:
+        text: 'Attribute'
+    Label:
+        text: 'Description'
+
+<ParameterHeader>:
+    size_hint_y: 0.2
+    orientation: 'horizontal'
+    Label:
+        text: 'Parameter'
+    Label:
+        text: 'Description'
+
+<FunctionBottomRow>:
+    size_hint_y: 0.5
+    Button:
+        text: 'Add Function'
+        on_release: app.addFunction()
+    Button:
+        text: 'Validate'
+        on_release: app.validateAll()
+    Button:
+        text: 'Submit'
+        on_release: app.stop_with_output()
+
+<EditableFunctionWidget>:
+    EditableLabel:
+        text: root._identifier
+        size_hint_x: root.layout[0]
+        on_text: root.updateID(self.text)
+    EditableLabel:
+        text: root._description
+        text_size: self.width, None
+        size_hint_x: root.layout[1]
+        on_text: root.updateDesc(self.text)
+    TextInput:
+        text: root._function
+        multiline: False
+        size_hint_x: root.layout[2]
+        padding_y: self.height / 2.0 - 12
+        on_text: root.updateFunction(self.text)
+
+<StaticFunctionWidget>:
+    Label:
+        text: root._identifier
+        size_hint_x: root.layout[0]
+    Label:
+        text: root._description
+        text_size: self.width, None
+        size_hint_x: root.layout[1]
+    TextInput:
+        text: root._function
+        multiline: False
+        size_hint_x: root.layout[2]
+        padding_y: self.height / 2.0 - 12
+        on_text: root.updateFunction(self.text)
+
+<VarWidget>:
+    orientation: 'horizontal'
+    Label:
+        text: root._name
+    Label:
+        text: root._description

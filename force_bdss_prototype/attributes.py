@@ -2,12 +2,31 @@ import numpy as np
 from .reaction_kineticswrapper import Reaction_kineticswrapper
 
 class Attributes:
+    """
+    Implemention of the Attribute dimension
+    """
+
     def __init__(self, R, C):
         self.R = R
         self.C = C
         self.reaction_kineticswrapper = Reaction_kineticswrapper(self.R, self.C)
 
     def calc_attributes(self, y):
+        """
+        Calculates attributes from the y-dimension
+
+        Parameters
+        ----------
+        y: numpy.array
+            numpy.array containing the y-dimension values
+
+        Returns
+        -------
+        (a, grad_y_a): tuple[numpy.array, sympy.Matrix]
+            A tuple consisting of a numpy array containing the attribute values
+            calculated from the y-dimension and a sympy.Matrix containing the
+            y_a gradient matrix 
+        """
         a = np.zeros(9, dtype=np.float)
         a[:4] = y
         x, grad_y_x = self.reaction_kineticswrapper.calc_x(y)
