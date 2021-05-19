@@ -10,5 +10,5 @@ S = { "name": "sideproduct", "manufacturer": "", "pdi": 0 }
 RP = { "reactants": [A, B], "products": [P] }
 RS = { "reactants": [A, B], "products": [S] }
 
-MCO = MCOwrapper(RP, C)
+MCO = MCOwrapper(RP, C, enable_gui = True)
 pp = MCO.solve()
