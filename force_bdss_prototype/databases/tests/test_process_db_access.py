@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from ..process_db_access import Process_db_access
+from force_bdss_prototype.databases.process_db_access import Process_db_access
 
 A = { "name": "eductA", "manufacturer": "", "pdi": 0 }
 B = { "name": "eductB", "manufacturer": "", "pdi": 0 }

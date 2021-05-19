@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from ..reaction_knowledge_access import Reaction_knowledge_access
+from force_bdss_prototype.databases.reaction_knowledge_access import Reaction_knowledge_access
 
 A = { "name": "eductA", "manufacturer": "", "pdi": 0 }
 B = { "name": "eductB", "manufacturer": "", "pdi": 0 }

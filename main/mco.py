@@ -1,6 +1,6 @@
 import sys
 sys.path.append("../")
-from force_bdss_prototype.MCOwrapper import MCOwrapper
+from force_bdss_prototype.mco.MCOwrapper import MCOwrapper
 
 A = { "name": "eductA", "manufacturer": "", "pdi": 0 }
 B = { "name": "eductB", "manufacturer": "", "pdi": 0 }

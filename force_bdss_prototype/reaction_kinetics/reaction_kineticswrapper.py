@@ -1,7 +1,7 @@
 import numpy as np
-from .process_db_access import Process_db_access
-from .material_db_access import Material_db_access
-from .initializer import Initializer
+from ..databases.process_db_access import Process_db_access
+from ..databases.material_db_access import Material_db_access
+from ..initializer.initializer import Initializer
 from .reaction_kinetics import Reaction_kinetics
 from sympy import symbols, Matrix, sympify, diff, evalf, lambdify
 

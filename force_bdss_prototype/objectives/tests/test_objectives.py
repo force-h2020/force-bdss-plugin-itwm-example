@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from ..objectives import Objectives
+from force_bdss_prototype.objectives.objectives import Objectives
 
 A = { "name": "eductA", "manufacturer": "", "pdi": 0 }
 B = { "name": "eductB", "manufacturer": "", "pdi": 0 }

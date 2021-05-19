@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from ..pareto_process_db import Pareto_process_db
+from force_bdss_prototype.pareto_process.pareto_process_db import Pareto_process_db
 
 data = np.arange(10)
 

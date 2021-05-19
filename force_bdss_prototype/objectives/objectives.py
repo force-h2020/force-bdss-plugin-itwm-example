@@ -1,8 +1,8 @@
 import numpy as np
-from .process_db_access import Process_db_access
-from .material_db_access import Material_db_access
-from .gui_apps.functionapp import FunctionApp
-from .attributes import Attributes
+from ..databases.process_db_access import Process_db_access
+from ..databases.material_db_access import Material_db_access
+from ..gui_apps.functionapp import FunctionApp
+from ..attributes.attributes import Attributes
 from sympy import symbols, Matrix, sympify, diff, evalf, lambdify
 
 class Objectives:

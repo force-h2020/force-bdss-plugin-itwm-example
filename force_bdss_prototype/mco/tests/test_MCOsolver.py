@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from ..MCOsolver import MCOsolver
+from force_bdss_prototype.mco.MCOsolver import MCOsolver
 
 y0 = np.array([0.5, 0.1, 330, 3600])
 va_range = (0, 1)

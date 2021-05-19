@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 
-from ..initializer import Initializer
-from ..material_db_access import Material_db_access
+from force_bdss_prototype.initializer.initializer import Initializer
+from force_bdss_prototype.databases.material_db_access import Material_db_access
 
 A = { "name": "eductA", "manufacturer": "", "pdi": 0 }
 B = { "name": "eductB", "manufacturer": "", "pdi": 0 }

@@ -1,7 +1,7 @@
 import numpy as np
-from .material_db_access import Material_db_access
-from .reaction_knowledge_access import Reaction_knowledge_access
-from .process_db_access import Process_db_access
+from ..databases.material_db_access import Material_db_access
+from ..databases.reaction_knowledge_access import Reaction_knowledge_access
+from ..databases.process_db_access import Process_db_access
 
 
 class Initializer:

@@ -1,6 +1,6 @@
-from .reaction_knowledge_access import Reaction_knowledge_access
-from .process_db_access import Process_db_access
-from .gui_apps.constraintsapp import ConstraintsApp
+from ..databases.reaction_knowledge_access import Reaction_knowledge_access
+from ..databases.process_db_access import Process_db_access
+from ..gui_apps.constraintsapp import ConstraintsApp
 
 
 class Constraints:

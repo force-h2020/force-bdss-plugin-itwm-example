@@ -1,5 +1,5 @@
 import numpy as np
-from .reaction_kineticswrapper import Reaction_kineticswrapper
+from ..reaction_kinetics.reaction_kineticswrapper import Reaction_kineticswrapper
 
 class Attributes:
     """

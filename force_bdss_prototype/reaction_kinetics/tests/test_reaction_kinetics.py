@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from ..reaction_kinetics import Reaction_kinetics, _analytical_solution, \
+from force_bdss_prototype.reaction_kinetics.reaction_kinetics import Reaction_kinetics, _analytical_solution, \
                                 _grad_x, _calc_k
 
 A = { "name": "eductA", "manufacturer": "", "pdi": 0 }

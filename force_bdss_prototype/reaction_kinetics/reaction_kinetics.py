@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.special import factorial
-from .initializer import Initializer
+from ..initializer.initializer import Initializer
 
 tol = 4e-1
 
