@@ -1,0 +1,92 @@
+#:kivy 1.10
+<ConstraintsTopRow>:
+    Label:
+        text: 'Name'
+        size_hint_x: 0.2
+    Label:
+        text: 'Unit'
+        size_hint_x: 0.1
+        pos_hint: {"x": 0.2, "y":0}
+    Label:
+        text: 'Min'
+        size_hint_x: 0.25
+        pos_hint: {"x": 0.275, "y":0}
+    Label:
+        text: 'Max'
+        size_hint_x: 0.25
+        pos_hint: {"x": 0.775, "y":0}
+<ConstraintsBottomRow>:
+    Button:
+        text: 'Add Constraint'
+        on_release: app.addConstraint()
+    Button:
+        text: 'Submit'
+        on_release: app.stopWithOutput()
+<StaticConstraintWidget>:
+    Label:
+        text: root._name
+        size_hint_x: 0.2
+    Label:
+        text: root._unit
+        size_hint_x: 0.1
+        pos_hint: {"x": 0.2, "y":0}
+    MinMaxSlider:
+        id: slider
+        min: root._min
+        max: root._max
+        size_hint: (0.7,0.75)
+        pos_hint: {"x": 0.3, "y":0}
+        value0: root._value0
+        value1: root._value1
+        on_value0: root.updateValueLabel(self.value0, 0)
+        on_value1: root.updateValueLabel(self.value1, 1)
+    TextInput:
+        id: minLabel
+        text: str(root._min)
+        size_hint: (0.1,0.25)
+        pos_hint: {"x": 0.35, "y":0.6}
+        multiline: False
+        on_text_validate: root.updateValue(self.text,0)
+    TextInput:
+        id: maxLabel
+        text: str(root._max)
+        size_hint: (0.1,0.25)
+        pos_hint: {"x": 0.85, "y":0.6}
+        multiline: False
+        on_text_validate: root.updateValue(self.text,1)
+<EditableConstraintWidget>:
+    EditableLabel:
+        id: nameLabel
+        text: root._name
+        size_hint_x: 0.2
+        on_text: root.updateName(self.text)
+    EditableLabel:
+        id: unitLabel
+        text: root._unit
+        size_hint_x: 0.1
+        pos_hint: {"x": 0.2, "y":0}
+        on_text: root.updateUnit(self.text)
+    MinMaxSlider:
+        id: slider
+        min: root._min
+        max: root._max
+        size_hint: (0.7,0.75)
+        pos_hint: {"x": 0.3, "y":0}
+        value0: root._value0
+        value1: root._value1
+        on_value0: root.updateValueLabel(self.value0, 0)
+        on_value1: root.updateValueLabel(self.value1, 1)
+    TextInput:
+        id: minLabel
+        text: str(root._min)
+        size_hint: (0.1,0.25)
+        pos_hint: {"x": 0.35, "y":0.6}
+        multiline: False
+        on_text_validate: root.updateValue(self.text,0)
+    TextInput:
+        id: maxLabel
+        text: str(root._max)
+        size_hint: (0.1,0.25)
+        pos_hint: {"x": 0.85, "y":0.6}
+        multiline: False
+        on_text_validate: root.updateValue(self.text,1)

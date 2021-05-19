@@ -8,9 +8,9 @@ from subprocess import check_call
 DEFAULT_PYTHON_VERSION = "3.6"
 PYTHON_VERSIONS = ["3.6"]
 
-ADDITIONAL_CORE_DEPS = ["scipy>=1.2.1"]
+ADDITIONAL_CORE_DEPS = ["scipy>=1.2.1", "numpy>=1.16.0"]
 
-PIP_DEPS = []
+PIP_DEPS = ["kivy>=1.11", "sympy>=1.8"]
 
 
 @click.group()
@@ -61,6 +61,24 @@ def test(python_version):
             "-m",
             "unittest",
             "discover",
+            "-s",
+            "./itwm_example",
+        ]
+    )
+
+    check_call(
+        [
+            "edm",
+            "run",
+            "-e",
+            env_name,
+            "--",
+            "python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "./force_bdss_prototype",
         ]
     )
 
