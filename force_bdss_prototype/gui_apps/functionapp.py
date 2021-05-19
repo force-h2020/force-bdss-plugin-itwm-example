@@ -106,7 +106,6 @@ class FunctionApp(App):
 
         #remove sub-functions from func_set + func derivatives
         attributes = self.attributes.getVariables()
-        print(attributes)
         AO = []
 
         for func in func_set:
@@ -148,6 +147,24 @@ class FunctionApp(App):
     def stop_with_output(self):
         if self.validateAll():
             self.stop()
+    
+    def validateNoGui(attributes, func_set):
+        AO = []
+        for func in func_set:
+            function = sympify(func)
+            AO.append(function)
+        
+        grad_A_AO = []
+
+        for func in AO:
+            temp = attributes[:]
+            i = 0
+            for a in attributes:
+                temp[i] = func.diff(a) 
+                i += 1
+            grad_A_AO += [temp]
+                
+        return (Matrix(AO),Matrix(grad_A_AO).transpose()) 
 
 #Widgets
 class FunctionWrapperWidget(ScrollView):

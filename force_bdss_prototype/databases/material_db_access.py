@@ -58,17 +58,17 @@ class Material_db_access:
 
         Returns
         -------
-        int
+        float
             The density in particles per liter
         """
         # Transferred to json
         # p in particles/l
         if C["name"] == "eductA":
-            p = 5
+            p = 5.
         if C["name"] == "eductB":
-            p = 10
+            p = 10.
         if C["name"] == "contamination":
-            p = 55
+            p = 55.
         return p
 
     def get_arrhenius_params(self, C):

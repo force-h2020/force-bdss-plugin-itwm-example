@@ -14,7 +14,7 @@ class Constraints:
         self.react_knowledge = Reaction_knowledge_access.getInstance()
         self.p_db_access = Process_db_access.getInstance(self.R)
 
-    def get_editor_constraints(self):
+    def get_editor_constraints(self, enable_gui = False):
         """
         Executes the constraints editor GUI and returns the user input
         constraints. Defaults to the linear constraints without user input.
@@ -31,17 +31,18 @@ class Constraints:
         """
         va_range, C_range, T_range, tau_range = self.get_linear_constraints()
 
-        constraints = [{"name": "Volume A","unit": "m³", "min": va_range[0], "max": va_range[1]},
-                   {"name": "Concentration e","unit": "ppm", "min": C_range[0], "max": C_range[1]},
-                   {"name": "Temperature", "unit": "K", "min": T_range[0], "max": T_range[1]},
-                   {"name": "Reaction time", "unit": "s", "min": tau_range[0], "max": tau_range[1]}]
+        if(enable_gui):
+            constraints = [{"name": "Volume A","unit": "m³", "min": va_range[0], "max": va_range[1]},
+                    {"name": "Concentration e","unit": "ppm", "min": C_range[0], "max": C_range[1]},
+                    {"name": "Temperature", "unit": "K", "min": T_range[0], "max": T_range[1]},
+                    {"name": "Reaction time", "unit": "s", "min": tau_range[0], "max": tau_range[1]}]
 
-        constraints = ConstraintsApp().runWithOutput(constraints, constraints)
+            constraints = ConstraintsApp().runWithOutput(constraints, constraints)
 
-        va_range  = (constraints[0].get('min'), constraints[0].get('max'))
-        C_range   = (constraints[1].get('min'), constraints[1].get('max'))
-        T_range   = (constraints[2].get('min'), constraints[2].get('max'))
-        tau_range = (constraints[3].get('min'), constraints[3].get('max'))
+            va_range  = (constraints[0].get('min'), constraints[0].get('max'))
+            C_range   = (constraints[1].get('min'), constraints[1].get('max'))
+            T_range   = (constraints[2].get('min'), constraints[2].get('max'))
+            tau_range = (constraints[3].get('min'), constraints[3].get('max'))
         return (va_range, C_range, T_range, tau_range)
 
     def get_linear_constraints(self):

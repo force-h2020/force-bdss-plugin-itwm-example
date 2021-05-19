@@ -15,16 +15,6 @@ class Process_db_accessTestCase(unittest.TestCase):
         p_db = Process_db_access.getInstance(R)
         self.assertIsInstance(p_db, Process_db_access)
 
-    def test_prod_cost_return_type(self):
-        p_db = Process_db_access.getInstance(R)
-        cost, grad_x_cost = p_db.get_prod_cost(np.array([350., 3600.]))
-        self.assertEqual(type(grad_x_cost), nptype)
-
-    def test_prod_cost_return_shape(self):
-        p_db = Process_db_access.getInstance(R)
-        cost, grad_x_cost = p_db.get_prod_cost(np.array([350., 3600.]))
-        self.assertEqual(grad_x_cost.shape, (7,))
-
     def test_contamination_range(self):
         p_db = Process_db_access.getInstance(R)
         cmin, cmax = p_db.get_contamination_range(A)
@@ -39,14 +29,3 @@ class Process_db_accessTestCase(unittest.TestCase):
         p_db = Process_db_access.getInstance(R)
         V_r = p_db.get_reactor_vol()
         self.assertEqual(type(V_r), float)
-
-    def test_mat_cost_return_type(self):
-        p_db = Process_db_access.getInstance(R)
-        cost, grad_y_cost = p_db.get_mat_cost(0.5, 0.1, 1, 1)
-        self.assertEqual(type(cost), float)
-        self.assertEqual(type(grad_y_cost), nptype)
-
-    def test_mat_cost_return_shape(self):
-        p_db = Process_db_access.getInstance(R)
-        _, grad_y_cost = p_db.get_mat_cost(0.5, 0.1, 1, 1)
-        self.assertEqual(grad_y_cost.shape, (4,))

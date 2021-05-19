@@ -10,12 +10,15 @@ class Objectives:
     Implementation of the Objective Dimension
     """
     # default constructur
-    def __init__(self, R, C):
+    def __init__(self, R, C, enable_gui = False):
         self.R = R
         self.C = C
         self.p_db_access = Process_db_access.getInstance(self.R)
         self.m_db_access = Material_db_access.getInstance()
-        self.O, self.grad_a_O = FunctionApp().run_with_output(self._function_editor_input(), -1)
+        if enable_gui:
+            self.O, self.grad_a_O = FunctionApp().run_with_output(self._function_editor_input(), -1)
+        else:
+            self.O, self.grad_a_O = FunctionApp.validateNoGui([*symbols("V_a, C_e, T, t, conc_A, conc_B, conc_P, conc_S, conc_C")],['t * (T - 290)^2 * W', '(cost_purification * (C_e / C_supplier -1)^2 + const_A) * V_a + V_r * quad_coeff * (V_a - 0.6 * V_r)**2 + (V_r - V_a) * cost_B', 'ln((conc_A + conc_B + conc_C + conc_S )/ C_supplier)'])
         self.attributes = Attributes(R, C)
         self._obj_calc_init()
 
